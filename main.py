@@ -7,5 +7,10 @@ def set_window(root):
     root.resizable(False, False)
 
 
+if __name__ == '__main__':
+    game = Game()
+
 root = tk.Tk()
 set_window(root)
+frame = MainFrame(root, game)
+
