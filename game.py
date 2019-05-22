@@ -1,5 +1,4 @@
 import tkinter as tk
-import json
 
 import characters
 
@@ -9,7 +8,7 @@ water_level = game_obj.water
 day = 0
 
 
-def start_game():
+def start_game(event):
     global okToPressReturn
 
     if okToPressReturn == False:
@@ -73,6 +72,7 @@ def is_alive():
         return False
     else:
         return True
+
 
 root = tk.Tk()
 #set the title.
