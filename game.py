@@ -1,5 +1,4 @@
 import tkinter as tk
-#from main import root
 import characters
 
 
@@ -17,11 +16,13 @@ class FullScreenApp(object):
         self.master.geometry(self._geom)
         self._geom=geom
 
+
 okToPressReturn = True
 game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
 day = 0
 mature = False
+
 
 def start_game(event):
     global okToPressReturn
@@ -37,17 +38,20 @@ def start_game(event):
 
         okToPressReturn = False
 
+
 def update_display():
     global water_level
     global day
+    global mature
 
     if water_level <= 15 or water_level >= 115:
-        plant_fig.config(image = dying_plant)
+        plant_fig.config(image=dying_plant)
     else:
         if day < 3:
-            plant_fig.config(image = normal_plant)
+            plant_fig.config(image=normal_plant)
         else:
             plant_fig.config(image=mature_plant)
+            mature = True
 
     # Обновляем уровень воды
     water_level_label.config(text="Water level: " + str(water_level))
@@ -104,6 +108,7 @@ def is_alive():
 
 
 root=tk.Tk()
+root.title("Plantogotchi")
 app=FullScreenApp(root)
 
 
@@ -113,7 +118,7 @@ start_label.pack()
 water_level_label = tk.Label(root, text="Water level: " + str(water_level), font=('Helvetica', 12))
 water_level_label.pack()
 
-#add a 'day' label.
+# add a 'day' label.
 day_label = tk.Label(root, text="Day: " + str(day), font=('Helvetica', 12))
 day_label.pack()
 
