@@ -121,12 +121,13 @@ day_label.pack()
 dying_plant = tk.PhotoImage(file="dying_plant.png")
 normal_plant = tk.PhotoImage(file="normal_plant.png")
 mature_plant = tk.PhotoImage(file="mature_plant.png")
+water_button = tk.PhotoImage(file="water_splash.png")
 
 # using an image
 plant_fig = tk.Label(root, image=normal_plant)
 plant_fig.pack()
 
-btn_water = tk.Button(root, text="Water the plant", command=water_the_plant)
+btn_water = tk.Button(root, image=water_button, text="Water the plant", command=water_the_plant)
 btn_water.pack()
 
 #run the 'startGame' function when the enter key is pressed.
