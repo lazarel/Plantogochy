@@ -1,22 +1,35 @@
 import tkinter as tk
-
+#from main import root
 import characters
+
+
+class FullScreenApp(object):
+    def __init__(self, master, **kwargs):
+        self.master=master
+        pad=3
+        self._geom='1000x900+0+0'
+        master.geometry("{0}x{1}+0+0".format(
+            master.winfo_screenwidth()-pad, master.winfo_screenheight()-pad))
+        master.bind('<Escape>',self.toggle_geom)
+    def toggle_geom(self,event):
+        geom=self.master.winfo_geometry()
+        print(geom,self._geom)
+        self.master.geometry(self._geom)
+        self._geom=geom
 
 okToPressReturn = True
 game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
 day = 0
-
+mature = False
 
 def start_game(event):
     global okToPressReturn
-
     if okToPressReturn == False:
         pass
-
     else:
         # update the time left label.
-        start_label.config(text="")
+        start_label.config(text="")  # Чтобы не висело "Press return to start
         # start updating the values
         update_water_level()
         update_day()
@@ -31,7 +44,10 @@ def update_display():
     if water_level <= 15 or water_level >= 115:
         plant_fig.config(image = dying_plant)
     else:
-        plant_fig.config(image = normal_plant)
+        if day < 3:
+            plant_fig.config(image = normal_plant)
+        else:
+            plant_fig.config(image=mature_plant)
 
     # Обновляем уровень воды
     water_level_label.config(text="Water level: " + str(water_level))
@@ -74,11 +90,22 @@ def is_alive():
         return True
 
 
-root = tk.Tk()
+#def maturation():
+    #global mature
+    #plant_fig.config(image=mature_plant)
+    #mature = True
+
+
+#root = tk.Tk()
 #set the title.
-root.title("Stay Alive!")
+#root.title("Stay Alive!")
 #set the size.
-root.geometry("500x300")
+#root.geometry("500x300")
+
+
+root=tk.Tk()
+app=FullScreenApp(root)
+
 
 start_label = tk.Label(root, text="Press 'Return' to start!", font=('Helvetica', 12))
 start_label.pack()
@@ -93,8 +120,9 @@ day_label.pack()
 # ADDING IMAGES
 dying_plant = tk.PhotoImage(file="dying_plant.png")
 normal_plant = tk.PhotoImage(file="normal_plant.png")
+mature_plant = tk.PhotoImage(file="mature_plant.png")
 
-#add a cat image
+# using an image
 plant_fig = tk.Label(root, image=normal_plant)
 plant_fig.pack()
 
