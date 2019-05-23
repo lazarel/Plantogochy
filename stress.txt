@@ -1,0 +1,5 @@
+STRESS 
+ Any external factor that negatively influences plant growth, productivity,
+reproductive capacity or survival. This includes a wide range of factors 
+which can be broadly divided into two main categories: abiotic or environmental 
+stress factors, and biotic or biological stress factors

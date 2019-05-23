@@ -2,27 +2,28 @@ import tkinter as tk
 
 import characters
 
-okToPressReturn = True
+Start_button = True
+
 game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
 day = 0
 
 
 def start_game(event):
-    global okToPressReturn
+    global Start_button
 
-    if okToPressReturn == False:
+    if Start_button == False:
         pass
 
     else:
         # update the time left label.
-        start_label.config(text="")
+        #start_label.config(text="")
         # start updating the values
         update_water_level()
         update_day()
         update_display()
 
-        okToPressReturn = False
+        Start_buttom = False
 
 def update_display():
     global water_level
