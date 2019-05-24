@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter.ttk import Progressbar
 from random import randint
-#from frames_switching import game_start
 import characters
 
 
@@ -22,19 +21,19 @@ class FullScreenApp(object):
 
 
 okToPressReturn = True
+print('Работает?')
 stress = False
 game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
 day = 0
 
-#if game_start:
-    #okToPressStart = True
-
 def start_game(event):
     global okToPressReturn
     if okToPressReturn == False:
+        print('okToPressReturn == False: game.py')
         pass
     else:
+        print('okToPressReturn == True: game.py')
         # update the time left label.
         start_label.config(text="")  # Чтобы не висело "Press return to start
         # start updating the values
@@ -74,7 +73,7 @@ def update_display():
             plant_fig.config(image=mature_died_plant)
 
     # Обновляем уровень воды
-    water_level_label.config(text="Water level: " + str(water_level))
+    water_level_label.config(text="Water level:")  # + str(water_level))
 
     # Обновляем счетчик дней
     day_label.config(text="Day: " + str(day))
@@ -138,23 +137,6 @@ def is_alive():
         return False
 
 
-
-#def maturation():
-    #global mature
-    #plant_fig.config(image=mature_plant)
-    #mature = True
-
-
-#root = tk.Tk()
-#set the title.
-#root.title("Stay Alive!")
-#set the size.
-#root.geometry("500x300")
-
-
-# !!!!!!!!!!!!!!!!!!!!!!
-
-
 root = tk.Tk()
 root.title("Plantogotchi")
 app = FullScreenApp(root)
@@ -162,11 +144,22 @@ app = FullScreenApp(root)
 start_label = tk.Label(text="Press 'Return' to start!", font=('Helvetica', 12))
 start_label.pack()
 
-water_level_label = tk.Label(text="Water level: " + str(water_level), font=('Helvetica', 12))
+water_level_label = tk.Label(text="Water level", font=('Helvetica', 12))
 water_level_label.pack()
 
 stress_level_label = tk.Label(text="Situation normal", font=('Helvetica', 12))
 stress_level_label.pack()
+
+with open("water.txt", "r") as f1:
+    water_text = f1.read()
+water_text_label = tk.Label(text=water_text, font=('Helvetica', 12))
+water_text_label.pack(side=tk.RIGHT)
+
+with open("stress.txt", "r") as f2:
+    stress_text = f2.read()
+stress_text_label = tk.Label(text=stress_text, font=('Helvetica', 12))
+stress_text_label.pack(side=tk.LEFT)
+
 
 water_bar = Progressbar(orient="horizontal",length=200, maximum=150,
                         mode="determinate", style='green.Horizontal.TProgressbar')
