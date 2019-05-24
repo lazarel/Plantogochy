@@ -1,24 +1,5 @@
 import tkinter as tk
 
-'''
-Root is an ordinary window, with a title bar and other
-    decoration provided by your window manager
-    
-    root = Tk()
-    
-    A Label widget can display either text or an icon or other image
-    Pack tells it to size itself to fit the given text,
-    and make itself visible
-    
-    w = Label(root, text="Hello world")
-    w.pack()
-    
-    The window won’t appear
-    until we’ve entered the Tkinter event loop
-
-    root.mainloop()   
-'''
-
 
 class MainFrame(tk.Frame):
     def __init__(self, root, game):
