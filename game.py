@@ -1,6 +1,6 @@
 import tkinter as tk
 from random import randint
-#from frame import okToPressReturn
+#from frames_switching import game_start
 import characters
 
 
@@ -26,6 +26,8 @@ game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
 day = 0
 
+#if game_start:
+    #okToPressStart = True
 
 def start_game(event):
     global okToPressReturn
@@ -85,10 +87,11 @@ def update_display():
 
 def update_stress_level():
     global stress
-    random_number = randint(0, 100)
-    if random_number == 0:
-        stress = True
-        stress_level_label.config(text="MAYDAY MAYDAY MAYDAY", font=('Helvetica', 12, 'bold italic'))
+    if is_alive():
+        random_number = randint(0, 100)
+        if random_number == 0:
+            stress = True
+            stress_level_label.config(text="MAYDAY MAYDAY MAYDAY", font=('Helvetica', 12, 'bold italic'))
         btn_mescaline.config(stat="enabled")
 
 
@@ -101,14 +104,15 @@ def update_water_level():
 
 def update_day():
     global day
-    day += 1
     if is_alive():
+        day += 1
         day_label.after(5000, update_day)
 
 
 def water_the_plant():
     global water_level
     water_level += 20
+
 
 def mescaline():
     global stress
@@ -128,6 +132,7 @@ def is_alive():
         elif water_level >= 150:
             start_label.config(text="Game over! The plant has rotted!")
         btn_water.config(stat="disabled")
+        btn_mescaline.config(stat="disabled")
         return False
 
 
