@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter.ttk import Progressbar
 from random import randint
 #from frames_switching import game_start
 import characters
@@ -42,7 +43,6 @@ def start_game(event):
         update_display()
 
         okToPressReturn = False
-
 
 def update_display():
     global water_level
@@ -92,12 +92,13 @@ def update_stress_level():
         if random_number == 0:
             stress = True
             stress_level_label.config(text="MAYDAY MAYDAY MAYDAY", font=('Helvetica', 12, 'bold italic'))
-        btn_mescaline.config(stat="enabled")
+        btn_mescaline.config(stat="active")
 
 
 def update_water_level():
     global water_level
     water_level -= 1
+    water_bar['value'] = water_level
     if is_alive():
         water_level_label.after(500, update_water_level)
 
@@ -112,6 +113,7 @@ def update_day():
 def water_the_plant():
     global water_level
     water_level += 20
+    water_bar['value'] = water_level
 
 
 def mescaline():
@@ -165,6 +167,10 @@ water_level_label.pack()
 
 stress_level_label = tk.Label(text="Situation normal", font=('Helvetica', 12))
 stress_level_label.pack()
+
+water_bar = Progressbar(orient="horizontal",length=200, maximum=150,
+                        mode="determinate", style='green.Horizontal.TProgressbar')
+water_bar.pack()
 
 # add a 'day' label.
 day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
