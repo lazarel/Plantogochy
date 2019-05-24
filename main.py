@@ -1,8 +1,8 @@
 
-from game import start_game #, okToPressReturn
+#from game import start_game #, okToPressReturn
 import tkinter as tk
 from frame import *
-#from Frames_switching import *
+from frames_switching import *
 
 
 # def set_window(root):
@@ -11,9 +11,9 @@ from frame import *
 #     root.resizable(False, False)
 
 if __name__ == '__main__':
-    #game = start_game(Start_button)
     app = Pages()
     app.mainloop()
+    #game = start_game(True)
 
 #<<<<<<< HEAD
 # root = tk.Tk()

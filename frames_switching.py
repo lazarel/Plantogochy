@@ -1,8 +1,9 @@
 import tkinter as tk               
 from tkinter import font  as tkfont 
 from game import start_game
-import game
+#import game
 
+game_start = False
 
 class Pages(tk.Tk):
 
@@ -64,7 +65,7 @@ class PageOne(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        with open('first_page.rtf','r') as f:   
+        with open('first_page.txt','r') as f:
             text = f.read()
         label = tk.Label(self, text=text, font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
@@ -118,7 +119,8 @@ class PageThree(tk.Frame):
         button1.pack(side = tk.RIGHT)
         button2.pack(side = tk.LEFT)
         button3.pack(side = tk.BOTTOM)
-        
+
+
 class PageFour(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -137,7 +139,8 @@ class PageFour(tk.Frame):
         button1.pack(side = tk.RIGHT)
         button2.pack(side = tk.LEFT)
         button3.pack(side = tk.BOTTOM)
-        
+
+
 class PageFive(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -156,31 +159,31 @@ class PageFive(tk.Frame):
         button1.pack(side = tk.RIGHT)
         button2.pack(side = tk.LEFT)
         button3.pack(side = tk.BOTTOM)
-        
-class PageSix(tk.Frame):
 
+
+class PageSix(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         label = tk.Label(self, text="GOOD LUCK", font=controller.title_font)
-        label.pack(side="top", fill ="x", pady=10)
+        label.pack(side="top", fill="x", pady=10)
         
-        button1 = tk.Button(self, text="Game",command = switching_game)
+        button1 = tk.Button(self, text="Game", command=lambda: switching_game)
         button2 = tk.Button(self, text="Prev",
-                            command = lambda: controller.show_frame("PageFive"))
+                            command=lambda: controller.show_frame("PageFive"))
+        button1.pack(side=tk.BOTTOM)
+        button2.pack(side=tk.LEFT)
        
-        button1.pack(side = tk.BOTTOM)
-        button2.pack(side = tk.LEFT)
-       
-        
+
         
 def switching_game():
-    Start_button = True
-    game = start_game(Start_button)
+     start_game(True)
+
+# game_start = switching_game()
         
         
         
 
         
-# if __name__ == "__main__":
+#if __name__ == "__main__":
 #     game = start_game(Start_button)
