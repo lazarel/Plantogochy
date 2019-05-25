@@ -3,28 +3,23 @@ import tkinter.ttk as ttk
 from tkinter.ttk import Progressbar
 from random import randint
 import characters
+import json, os
+
+SAVE_DIR = '~/Plantogotchi/save'
 
 
-
-
-class FullScreenApp(object):
-    def __init__(self, master, **kwargs):
-        self.master = master
-        pad = 3
-        self._geom = '1000x900+0+0'
-        master.geometry("{0}x{1}+0+0".format(
-            master.winfo_screenwidth() - pad, master.winfo_screenheight() - pad))
-        master.bind('<Escape>', self.toggle_geom)
-
-    def toggle_geom(self, event):
-        geom = self.master.winfo_geometry()
-        print(geom, self._geom)
-        self.master.geometry(self._geom)
-        self._geom = geom
+class FullScreenApp(tk.Frame):
+    def __init__(self, parent, **kw):
+        super().__init__(**kw)
+        self.parent = parent
+        menubar = tk.Menu(self.parent)
+        self.parent.config(menu=menubar)
+        fileMenu = tk.Menu(menubar)
+        fileMenu.add_command(label="Exit", command=self.quit)
+        menubar.add_cascade(label="File", menu=fileMenu)
 
 
 okToPressReturn = True
-print('Работает?')
 game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
 stress = False
@@ -35,13 +30,12 @@ day = 0
 def start_game(event):
     global okToPressReturn
     if okToPressReturn == False:
-        print('okToPressReturn == False: game.py')
         pass
     else:
-        print('okToPressReturn == True: game.py')
         # update the time left label.
         start_label.config(text="")  # Чтобы не висело "Press return to start
         # start updating the values
+        btn_water.config(stat="active")
         update_water_level()
         update_day()
         update_display()
@@ -88,8 +82,6 @@ def update_display():
     plant_fig.after(100, update_display)
 
     stress_level_label.after(500, update_stress)
-
-
 
 
 def update_stress():
@@ -161,6 +153,9 @@ def is_alive():
 
 root = tk.Tk()
 root.title("Plantogotchi")
+root.geometry("1010x720")
+root.resizable(width=False, height=False)
+
 app = FullScreenApp(root)
 
 start_label = tk.Label(text="Press 'Return' to start!", font=('Helvetica', 12))
@@ -221,7 +216,7 @@ plant_fig = tk.Label(image=normal_plant)
 plant_fig.grid(row=6, column=2)
 #
 btn_water = tk.Button(image=water_button, command=water_the_plant)
-btn_water.grid(row=6, column=1)
+btn_water.grid(row=7, column=1, sticky=tk.NSEW)
 #
 #
 btn_mescaline = tk.Button(image=mescaline_button, command=mescaline, stat="disabled")
@@ -229,11 +224,9 @@ if stress:
     btn_mescaline.config(state="active")
 else:
     btn_mescaline.config(state="disabled")
-btn_mescaline.grid(row=6, column=3)
-
+btn_mescaline.grid(row=7, column=3, sticky=tk.NSEW)
 
 # run the 'startGame' function when the enter key is pressed.
 root.bind('<Return>', start_game)
-
 # start the GUI
 root.mainloop()
