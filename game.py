@@ -106,8 +106,10 @@ def update_stress():
 def update_stress_level():
     global stress
     global stress_level
+    global water_level
     if stress:
         stress_level += 1
+        water_level -= 3
         stress_bar['value'] = stress_level
     else:
         stress_level = 0
