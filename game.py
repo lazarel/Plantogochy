@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from tkinter.ttk import Progressbar
 from random import randint
 import characters
@@ -24,10 +25,12 @@ class FullScreenApp(object):
 
 okToPressReturn = True
 print('Работает?')
-stress = False
 game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
+stress = False
+stress_level = game_obj.stress
 day = 0
+
 
 def start_game(event):
     global okToPressReturn
@@ -42,13 +45,14 @@ def start_game(event):
         update_water_level()
         update_day()
         update_display()
-
         okToPressReturn = False
+
 
 def update_display():
     global water_level
     global day
     global stress
+    global stress_level
 
     if water_level <= 15 or water_level >= 115:
         if day < 3:
@@ -83,17 +87,31 @@ def update_display():
     # Функция запускается каждые 100ms
     plant_fig.after(100, update_display)
 
-    stress_level_label.after(500, update_stress_level)
+    stress_level_label.after(500, update_stress)
 
 
-def update_stress_level():
+
+
+def update_stress():
     global stress
     if is_alive():
         random_number = randint(0, 100)
         if random_number == 0:
             stress = True
             stress_level_label.config(text="MAYDAY MAYDAY MAYDAY", font=('Helvetica', 12, 'bold italic'))
+        update_stress_level()
         btn_mescaline.config(stat="active")
+
+
+def update_stress_level():
+    global stress
+    global stress_level
+    if stress:
+        stress_level += 1
+        stress_bar['value'] = stress_level
+    else:
+        stress_level = 0
+        stress_bar['value'] = 0
 
 
 def update_water_level():
@@ -130,7 +148,7 @@ def is_alive():
     if water_level != 0 and water_level < 150:
         return True
     else:
-        if water_level == 0:
+        if water_level <= 0:
             start_label.config(text="Game over! The plant has withered!")
         elif water_level >= 150:
             start_label.config(text="Game over! The plant has rotted!")
@@ -149,26 +167,37 @@ start_label.grid(row=0, column=2)
 water_level_label = tk.Label(text="Water level", font=('Helvetica', 12))
 water_level_label.grid(row=1, column=2)
 
+
+water_bar_style = ttk.Style()
+water_bar_style.theme_use('default')
+water_bar_style.configure("blue.Horizontal.TProgressbar", background="blue")
 water_bar = Progressbar(orient="horizontal",length=200, maximum=150,
-                        mode="determinate", style='green.Horizontal.TProgressbar')
+                        mode="determinate", style="blue.Horizontal.TProgressbar")
 water_bar.grid(row=2, column=2)
 
 stress_level_label = tk.Label(text="Situation normal", font=('Helvetica', 12))
 stress_level_label.grid(row=3, column=2)
 
+stress_bar_style = ttk.Style()
+stress_bar_style.theme_use('default')
+stress_bar_style.configure("redHorizontal.Tprogressbar", background="red")
+stress_bar = Progressbar(orient="horizontal", length=200, maximum=100,
+                         mode="determinate", style="red.Horizontal.TProgressbar")
+stress_bar.grid(row=4, column=2)
+
 # add a 'day' label.
 day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
-day_label.grid(row=4, column=2)
+day_label.grid(row=5, column=2)
 
 with open("water.txt", "r") as f1:
     water_text = f1.read()
 water_text_label = tk.Label(text=water_text, font=('Helvetica', 12))
-water_text_label.grid(row=5, column=1)
+water_text_label.grid(row=6, column=1)
 
 with open("stress.txt", "r") as f2:
     stress_text = f2.read()
 stress_text_label = tk.Label(text=stress_text, font=('Helvetica', 12))
-stress_text_label.grid(row=5, column=4)
+stress_text_label.grid(row=6, column=4)
 
 
 # ADDING IMAGES
@@ -187,7 +216,7 @@ mescaline_button = tk.PhotoImage(file="mescaline.png")
 
  # using an image
 plant_fig = tk.Label(image=normal_plant)
-plant_fig.grid(row=5, column=2)
+plant_fig.grid(row=6, column=2)
 #
 btn_water = tk.Button(image=water_button, command=water_the_plant)
 btn_water.grid(row=6, column=1)
@@ -199,7 +228,6 @@ if stress:
 else:
     btn_mescaline.config(state="disabled")
 btn_mescaline.grid(row=6, column=3)
-
 
 
 # run the 'startGame' function when the enter key is pressed.
