@@ -7,7 +7,6 @@ import json, os
 
 SAVE_DIR = '~/Plantogotchi/save'
 
-
 class FullScreenApp(tk.Frame):
     def __init__(self, parent, **kw):
         super().__init__(**kw)
@@ -25,6 +24,7 @@ water_level = game_obj.water
 stress = False
 stress_level = game_obj.stress
 day = 0
+night = False
 
 
 def start_game(event):
@@ -118,9 +118,19 @@ def update_water_level():
 
 def update_day():
     global day
+    global night
     if is_alive():
+        night = False
         day += 1
-        day_label.after(5000, update_day)
+        day_label.after(2000, update_night())
+
+
+
+def update_night():
+    global night
+    if is_alive():
+        night = True
+        day_label.after(2000, update_day())
 
 
 def water_the_plant():
@@ -134,7 +144,6 @@ def mescaline():
     stress = False
     btn_mescaline.config(stat="disabled")
     stress_level_label.config(text="Situation normal", font=('Helvetica', 12))
-
 
 
 def is_alive():
@@ -158,6 +167,23 @@ root.geometry("1010x720")
 root.resizable(width=False, height=False)
 
 app = FullScreenApp(root)
+
+##################################################################
+# ADDING IMAGES
+dying_plant = tk.PhotoImage(file="dying_plant.png")
+normal_plant = tk.PhotoImage(file="normal_plant.png")
+mature_plant = tk.PhotoImage(file="mature_plant.png")
+stress_plant = tk.PhotoImage(file="stress_plant.png")
+mature_stress_plant = tk.PhotoImage(file="mature_stress_plant.png")
+mature_dying_plant = tk.PhotoImage(file="mature_dying_plant.png")
+died_plant = tk.PhotoImage(file="died_plant.png")
+mature_died_plant = tk.PhotoImage(file="mature_died_plant.png")
+water_button = tk.PhotoImage(file="water_splash.png")
+msg = tk.PhotoImage(file="magic.png")
+mescaline_button = tk.PhotoImage(file="mescaline.png")
+sun = tk.PhotoImage(file="creepy_sun.png")
+moon = tk.PhotoImage(file="molester_moon.png")
+co2 = tk.PhotoImage(file="co2.png")
 
 start_label = tk.Label(text="Press 'Return' to start!", font=('Helvetica', 12))
 start_label.grid(row=0, column=2)
@@ -183,7 +209,6 @@ stress_bar = Progressbar(orient="horizontal", length=200, maximum=100,
                          mode="determinate", style="red.Horizontal.TProgressbar")
 stress_bar.grid(row=4, column=2)
 
-# add a 'day' label.
 day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
 day_label.grid(row=5, column=2)
 
@@ -197,37 +222,21 @@ with open("stress.txt", "r") as f2:
 stress_text_label = tk.Label(text=stress_text, font=('Helvetica', 12))
 stress_text_label.grid(row=6, column=4)
 
-
-# ADDING IMAGES
-dying_plant = tk.PhotoImage(file="dying_plant.png")
-normal_plant = tk.PhotoImage(file="normal_plant.png")
-mature_plant = tk.PhotoImage(file="mature_plant.png")
-stress_plant = tk.PhotoImage(file="stress_plant.png")
-mature_stress_plant = tk.PhotoImage(file="mature_stress_plant.png")
-mature_dying_plant = tk.PhotoImage(file="mature_dying_plant.png")
-died_plant = tk.PhotoImage(file="died_plant.png")
-mature_died_plant = tk.PhotoImage(file="mature_died_plant.png")
-water_button = tk.PhotoImage(file="water_splash.png")
-msg = tk.PhotoImage(file="magic.png")
-mescaline_button = tk.PhotoImage(file="mescaline.png")
-
-
- # using an image
 plant_fig = tk.Label(image=normal_plant)
 plant_fig.grid(row=6, column=2)
-#
+
+# sky_fig = tk.Label(image=sun)
+# sky_fig.grid(rowspan=5, column=1, sticky=tk.NSEW)
+
 btn_water = tk.Button(image=water_button, command=water_the_plant)
 btn_water.config(stat="disabled")
-# if is_alive():
-#     btn_water.config(stat="active")
 btn_water.grid(row=7, column=1, sticky=tk.NSEW)
-#
-#
+
+btn_co2 = tk.Button(image=co2)
+btn_co2.config(stat="disabled")
+btn_co2.grid(row=7, column=2, sticky=tk.NSEW)
+
 btn_mescaline = tk.Button(image=mescaline_button, command=mescaline, stat="disabled")
-# if stress:
-#     btn_mescaline.config(stat="active")
-# else:
-#     btn_mescaline.config(stat="disabled")
 btn_mescaline.grid(row=7, column=4, sticky=tk.NSEW)
 
 # run the 'startGame' function when the enter key is pressed.
