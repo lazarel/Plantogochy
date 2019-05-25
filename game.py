@@ -92,7 +92,6 @@ def update_stress():
             stress = True
             stress_level_label.config(text="MAYDAY MAYDAY MAYDAY", font=('Helvetica', 12, 'bold italic'))
         update_stress_level()
-        btn_mescaline.config(stat="active")
 
 
 def update_stress_level():
@@ -103,6 +102,7 @@ def update_stress_level():
         stress_level += 1
         water_level -= 3
         stress_bar['value'] = stress_level
+        btn_mescaline.config(stat="active")
     else:
         stress_level = 0
         stress_bar['value'] = 0
@@ -140,6 +140,7 @@ def mescaline():
 def is_alive():
     global water_level
     if water_level != 0 and water_level < 150:
+        btn_water.config(stat="active")
         return True
     else:
         if water_level <= 0:
@@ -216,15 +217,18 @@ plant_fig = tk.Label(image=normal_plant)
 plant_fig.grid(row=6, column=2)
 #
 btn_water = tk.Button(image=water_button, command=water_the_plant)
+btn_water.config(stat="disabled")
+# if is_alive():
+#     btn_water.config(stat="active")
 btn_water.grid(row=7, column=1, sticky=tk.NSEW)
 #
 #
 btn_mescaline = tk.Button(image=mescaline_button, command=mescaline, stat="disabled")
-if stress:
-    btn_mescaline.config(state="active")
-else:
-    btn_mescaline.config(state="disabled")
-btn_mescaline.grid(row=7, column=3, sticky=tk.NSEW)
+# if stress:
+#     btn_mescaline.config(stat="active")
+# else:
+#     btn_mescaline.config(stat="disabled")
+btn_mescaline.grid(row=7, column=4, sticky=tk.NSEW)
 
 # run the 'startGame' function when the enter key is pressed.
 root.bind('<Return>', start_game)
