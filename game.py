@@ -4,6 +4,8 @@ from random import randint
 import characters
 
 
+
+
 class FullScreenApp(object):
     def __init__(self, master, **kwargs):
         self.master = master
@@ -142,32 +144,32 @@ root.title("Plantogotchi")
 app = FullScreenApp(root)
 
 start_label = tk.Label(text="Press 'Return' to start!", font=('Helvetica', 12))
-start_label.pack()
+start_label.grid(row=0, column=2)
 
 water_level_label = tk.Label(text="Water level", font=('Helvetica', 12))
-water_level_label.pack()
+water_level_label.grid(row=1, column=2)
+
+water_bar = Progressbar(orient="horizontal",length=200, maximum=150,
+                        mode="determinate", style='green.Horizontal.TProgressbar')
+water_bar.grid(row=2, column=2)
 
 stress_level_label = tk.Label(text="Situation normal", font=('Helvetica', 12))
-stress_level_label.pack()
+stress_level_label.grid(row=3, column=2)
+
+# add a 'day' label.
+day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
+day_label.grid(row=4, column=2)
 
 with open("water.txt", "r") as f1:
     water_text = f1.read()
 water_text_label = tk.Label(text=water_text, font=('Helvetica', 12))
-water_text_label.pack(side=tk.RIGHT)
+water_text_label.grid(row=5, column=1)
 
 with open("stress.txt", "r") as f2:
     stress_text = f2.read()
 stress_text_label = tk.Label(text=stress_text, font=('Helvetica', 12))
-stress_text_label.pack(side=tk.LEFT)
+stress_text_label.grid(row=5, column=4)
 
-
-water_bar = Progressbar(orient="horizontal",length=200, maximum=150,
-                        mode="determinate", style='green.Horizontal.TProgressbar')
-water_bar.pack()
-
-# add a 'day' label.
-day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
-day_label.pack()
 
 # ADDING IMAGES
 dying_plant = tk.PhotoImage(file="dying_plant.png")
@@ -183,20 +185,20 @@ msg = tk.PhotoImage(file="magic.png")
 mescaline_button = tk.PhotoImage(file="mescaline.png")
 
 
-# using an image
+ # using an image
 plant_fig = tk.Label(image=normal_plant)
-plant_fig.pack()
-
+plant_fig.grid(row=5, column=2)
+#
 btn_water = tk.Button(image=water_button, command=water_the_plant)
-btn_water.pack(side=tk.RIGHT)
-
-
+btn_water.grid(row=6, column=1)
+#
+#
 btn_mescaline = tk.Button(image=mescaline_button, command=mescaline, stat="disabled")
-# if stress:
-#     btn_mescaline.config(state="enabled")
-# else:
-#     btn_mescaline.config(state="disabled")
-btn_mescaline.pack(side=tk.LEFT)
+if stress:
+    btn_mescaline.config(state="active")
+else:
+    btn_mescaline.config(state="disabled")
+btn_mescaline.grid(row=6, column=3)
 
 
 
