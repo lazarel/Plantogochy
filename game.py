@@ -25,6 +25,7 @@ stress = False
 stress_level = game_obj.stress
 day = 0
 night = False
+nutrient = 80
 
 
 def start_game(event):
@@ -38,6 +39,7 @@ def start_game(event):
         btn_water.config(stat="active")
         update_water_level()
         update_day()
+        update_nutrient_level()
         update_display()
         okToPressReturn = False
 
@@ -66,6 +68,11 @@ def update_display():
             plant_fig.config(image=mature_stress_plant)
         btn_mescaline.config(stat="active")
 
+    if night:
+        btn_co2.config(stat="active")
+    else:
+        btn_co2.config(stat="disabled")
+
     if not is_alive():
         if day < 3:
             plant_fig.config(image=died_plant)
@@ -73,7 +80,7 @@ def update_display():
             plant_fig.config(image=mature_died_plant)
 
     # Обновляем уровень воды
-    water_level_label.config(text="Water level:")  # + str(water_level))
+    water_level_label.config(text="Water level:")
 
     # Обновляем счетчик дней
     day_label.config(text="Day: " + str(day))
@@ -99,9 +106,11 @@ def update_stress_level():
     global stress_level
     global water_level
     global day
+    global nutrient
     if stress:
         stress_level += (1 + day/2)
         water_level -= 3
+        nutrient -= 2
         stress_bar['value'] = stress_level
         btn_mescaline.config(stat="active")
     else:
@@ -118,6 +127,16 @@ def update_water_level():
         water_level_label.after(500, update_water_level)
 
 
+def update_nutrient_level():
+    global nutrient
+    global day
+    nutrient -= day
+    print(nutrient)
+    nutrient_bar['value'] = nutrient
+    if is_alive():
+        nutrient_label.after(500, update_nutrient_level)
+
+
 def update_day():
     global day
     global night
@@ -126,13 +145,10 @@ def update_day():
             day += 0.5
             night = False
             sky_fig.config(image=sun)
-            print("day: ", day)
         else:
             day += 0.5
             night = True
             sky_fig.config(image=moon)
-            print("night")
-        #day += 1
         day_label.after(20000, update_day)
 
 
@@ -140,6 +156,12 @@ def water_the_plant():
     global water_level
     water_level += 20
     water_bar['value'] = water_level
+
+
+def fixation():
+    global nutrient
+    nutrient += 2
+    nutrient_bar['value'] = nutrient
 
 
 def mescaline():
@@ -151,7 +173,7 @@ def mescaline():
 
 def is_alive():
     global water_level
-    if water_level != 0 and water_level < 150:
+    if water_level > 0 and water_level < 150 and nutrient > 0:
         btn_water.config(stat="active")
         return True
     else:
@@ -159,6 +181,8 @@ def is_alive():
             start_label.config(text="Game over! The plant has withered!")
         elif water_level >= 150:
             start_label.config(text="Game over! The plant has rotted!")
+        if nutrient <= 0:
+            start_label.config(text="Game over! The plant died of hunger!")
         btn_water.config(stat="disabled")
         btn_mescaline.config(stat="disabled")
         return False
@@ -212,6 +236,16 @@ stress_bar = Progressbar(orient="horizontal", length=200, maximum=100,
                          mode="determinate", style="red.Horizontal.TProgressbar")
 stress_bar.grid(row=4, column=2)
 
+nutrient_label = tk.Label(text="Nutrients level:", font=('Helvetica', 12))
+nutrient_label.grid(row=2, column=3)
+
+nutrient_bar_style = ttk.Style()
+nutrient_bar_style.theme_use('default')
+nutrient_bar_style.configure("redHorizontal.Tprogressbar", background="green")
+nutrient_bar = Progressbar(orient="horizontal", length=200, maximum=100,
+                         mode="determinate", style="red.Horizontal.TProgressbar")
+nutrient_bar.grid(row=3, column=3)
+
 day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
 day_label.grid(row=5, column=2)
 
@@ -235,7 +269,7 @@ btn_water = tk.Button(image=water_button, command=water_the_plant)
 btn_water.config(stat="disabled")
 btn_water.grid(row=7, column=1, sticky=tk.NSEW)
 
-btn_co2 = tk.Button(image=co2)
+btn_co2 = tk.Button(image=co2, command=fixation)
 btn_co2.config(stat="disabled")
 btn_co2.grid(row=7, column=2, sticky=tk.NSEW)
 
