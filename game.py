@@ -289,10 +289,10 @@ nutrient_bar.grid(row=3, column=3)
 day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
 day_label.grid(row=5, column=2)
 
-with open("water.txt", "r") as f1:
-    water_text = f1.read()
-water_text_label = tk.Label(text=water_text, font=('Helvetica', 12))
-water_text_label.grid(row=6, column=1)
+# with open("water.txt", "r") as f1:
+#     water_text = f1.read()
+# water_text_label = tk.Label(text=water_text, font=('Helvetica', 12))
+# water_text_label.grid(row=6, column=1)
 
 with open("stress.txt", "r") as f2:
     stress_text = f2.read()
