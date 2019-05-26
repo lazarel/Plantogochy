@@ -31,7 +31,7 @@ nutrient = 80
 def start_game(event):
     global okToPressReturn
     if okToPressReturn == False:
-        pass
+        restart_game()
     else:
         # update the time left label.
         start_label.config(text="")  # Чтобы не висело "Press return to start
@@ -42,6 +42,33 @@ def start_game(event):
         update_nutrient_level()
         update_display()
         okToPressReturn = False
+
+
+def restart_game():
+    if not is_alive():
+        global water_level
+        global day
+        global stress
+        global stress_level
+        global night
+        global nutrient
+        game_obj = characters.C3JuvenalPlant()
+
+        water_level = game_obj.water
+        print(water_level)
+        stress = False
+        stress_level = game_obj.stress
+        day = 0
+        night = False
+        nutrient = 80
+
+        start_label.config(text="")  # Чтобы не висело "Press return to start
+        # start updating the values
+        update_water_level()
+        update_day()
+        update_stress_level()
+        update_nutrient_level()
+        update_display()
 
 
 def update_display():
@@ -116,6 +143,8 @@ def update_stress_level():
     else:
         stress_level = 0
         stress_bar['value'] = 0
+        stress_level_label.config(text="Situation normal", font=('Helvetica', 12))
+
 
 
 def update_water_level():
@@ -130,7 +159,7 @@ def update_water_level():
 def update_nutrient_level():
     global nutrient
     global day
-    nutrient -= day
+    nutrient -= day/10
     print(nutrient)
     nutrient_bar['value'] = nutrient
     if is_alive():
@@ -178,11 +207,11 @@ def is_alive():
         return True
     else:
         if water_level <= 0:
-            start_label.config(text="Game over! The plant has withered!")
+            start_label.config(text="Game over! The plant has withered! Press return to restart")
         elif water_level >= 150:
-            start_label.config(text="Game over! The plant has rotted!")
+            start_label.config(text="Game over! The plant has rotted! Press return to restart")
         if nutrient <= 0:
-            start_label.config(text="Game over! The plant died of hunger!")
+            start_label.config(text="Game over! The plant died of hunger! Press return to restart")
         btn_water.config(stat="disabled")
         btn_mescaline.config(stat="disabled")
         return False
