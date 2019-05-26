@@ -231,7 +231,7 @@ stress_level_label.grid(row=3, column=2)
 
 stress_bar_style = ttk.Style()
 stress_bar_style.theme_use('default')
-stress_bar_style.configure("redHorizontal.Tprogressbar", background="red")
+stress_bar_style.configure("red.Horizontal.TProgressbar", background="red")
 stress_bar = Progressbar(orient="horizontal", length=200, maximum=100,
                          mode="determinate", style="red.Horizontal.TProgressbar")
 stress_bar.grid(row=4, column=2)
@@ -241,9 +241,9 @@ nutrient_label.grid(row=2, column=3)
 
 nutrient_bar_style = ttk.Style()
 nutrient_bar_style.theme_use('default')
-nutrient_bar_style.configure("redHorizontal.Tprogressbar", background="green")
+nutrient_bar_style.configure("green.Horizontal.TProgressbar", background="green")
 nutrient_bar = Progressbar(orient="horizontal", length=200, maximum=100,
-                         mode="determinate", style="red.Horizontal.TProgressbar")
+                         mode="determinate", style="green.Horizontal.TProgressbar")
 nutrient_bar.grid(row=3, column=3)
 
 day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
