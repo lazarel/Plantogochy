@@ -7,6 +7,8 @@ import os
 import characters
 import menu
 
+SAVE_DIR = os.path
+
 
 
 
@@ -27,64 +29,7 @@ class FullScreenApp(tk.Frame):
         self.master.geometry(self._geom)
         self._geom = geom
         
-def _add_menu(self):
-    self.master.title("Plantogotchi")
-    menu_bar = tk.Menu(self.master)
-    self.master.config(menu=menu_bar)
-    file_menu = tk.Menu(menu_bar)
-    game_menu = tk.Menu(menu_bar)
-    
-    # menu_bar.add_cascade(label="File", menu=file_menu)
-    file_menu.add_command(label="save", command=save)
-    file_menu.add_command(label="exit", command=lambda root=root:quit(root))
-    # file_menu.add_command(label="load", command=self.load)
 
-#    #   game_menu.add_command(label='new', command=self._menu.start_new_game)
-    menu_bar.add_cascade(label="file", menu=file_menu)
-    
-    menu_bar.add_cascade(label='game', menu=game_menu)
-
-    
-# def onExit(self):
-#         self.quit()
-def _get_save_file_name(self):
-    initialdir = os.path.expanduser(SAVE_DIR)
-    if not os.path.exists(initialdir):
-        os.makedirs(initialdir)
-    save_file_name = filedialog.asksaveasfilename(
-        initialdir=initialdir,
-        title='Save game',
-        filetypes=(("json files", "*.json"), ("all files", "*.*"))
-    )
-    if save_file_name in [(), '']:
-        return None
-    return save_file_name
-    
-def _get_load_file_name(self):
-    initialdir = os.path.expanduser(SAVE_DIR)
-    if not os.path.exists(initialdir):
-        initialdir = os.path.expanduser('~')
-    save_file_name = filedialog.askopenfilename(
-        initialdir=initialdir,
-        filetypes=(("json files", "*.json"), ("all files", "*.*"))
-    )
-    if save_file_name in [(), '']:
-        return None
-    return save_file_name
-
-def save(self):
-    old_lock = self.lock
-    self.lock = True
-    save_file_name = self._get_save_file_name()
-    if save_file_name is not None:
-        saved_game = {
-            "water_level": game_obj.water,
-            "stress_level": game_obj.stress,
-            "day": game_obj.update_day,
-            "stress": game_obj.update_stress,
-        }
-        with open(save_file_name, 'w') as f:
-            json.dump(saved_game, f)
         
 
         
@@ -138,6 +83,7 @@ def update_display():
         else:
             plant_fig.config(image=mature_stress_plant)
         btn_mescaline.config(stat="active")
+
 
     if not is_alive():
         if day < 3:
@@ -227,10 +173,78 @@ def is_alive():
 
 
 
+
+
+def _init_atributes_with_loaded_values(saved_game):
+    water_level =  saved_game['water_level'],
+    day = saved_game['day'],
+   #displey":saved_game['displey']
+    return saved_game['lock']
+#     
+#     
+    
+def load():
+    lock = True
+    load_file_name = _get_load_file_name()
+    if load_file_name is not None:
+        with open(load_file_name) as f:
+            saved_game = json.load(f)
+        saved_lock = _init_atributes_with_loaded_values(saved_game)
+        lock = saved_lock
+       
+
+def _get_save_file_name():
+    initialdir = os.path.expanduser(SAVE_DIR)
+    if not os.path.exists(initialdir):
+        os.makedirs(initialdir)
+    save_file_name = filedialog.asksaveasfilename(
+        initialdir=initialdir,
+        title='Save game',
+        filetypes=(("json files", "*.json"), ("all files", "*.*"))
+    )
+    if save_file_name in [(), '']:
+        return None
+    return save_file_name
+    
+def _get_load_file_name():
+    initialdir = os.path.expanduser(SAVE_DIR)
+    if not os.path.exists(initialdir):
+        initialdir = os.path.expanduser('~')
+    save_file_name = filedialog.askopenfilename(
+        initialdir=initialdir,
+        filetypes=(("json files", "*.json"), ("all files", "*.*"))
+    )
+    if save_file_name in [(), '']:
+        return None
+    return save_file_name
+
+def save():
+    old_lock = lock
+    lock = True
+    save_file_name = _get_save_file_name(root)
+    if save_file_name is not None:
+        saved_game = {
+            "water_level": update_water_level(),
+            "day": update_day()}
+           # "displey":update_display()}
+        with open(save_file_name, 'w') as f:
+            json.dump(saved_game, f)
+lock = True
+
 root = tk.Tk()
-#root.title("Plantogotchi")
+root.title("Plantogotchi")
 app = FullScreenApp(root)
-_add_menu(app)
+
+menu_bar = tk.Menu(root)
+root.config(menu = menu_bar)
+file_menu = tk.Menu(menu_bar)
+game_menu = tk.Menu(menu_bar)
+file_menu.add_command(label="save", command=save)
+file_menu.add_command(label="exit", command=lambda root=root:quit(root))
+file_menu.add_command(label="load", command=load)
+#game_menu.add_command(label='new', command= start_new_game)
+menu_bar.add_cascade(label="file", menu=file_menu)
+menu_bar.add_cascade(label='game', menu=game_menu)
 
 
 start_label = tk.Label(text="Press 'Return' to start!", font=('Helvetica', 12))
