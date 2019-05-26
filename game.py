@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from tkinter.ttk import Progressbar
 from random import randint
 import characters
-# import json, os
+import json, os
 
 SAVE_DIR = '~/Plantogotchi/save'
 
@@ -20,11 +20,12 @@ class FullScreenApp(tk.Frame):
 
 
 okToPressReturn = True
+Pause = False
 game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
 stress = False
 stress_level = game_obj.stress
-day = 0
+day = 9
 night = False
 nutrient = 80
 
@@ -70,6 +71,19 @@ def restart_game():
         update_stress_level()
         update_nutrient_level()
         update_display()
+
+
+def pause():
+    global Pause
+
+    if Pause == True:
+
+        Pause = False
+        pause_label = tk.Label(text="         ", font=('Helvetica', 20)).grid(row=0, column=2)
+
+    else:
+        Pause = True
+        pause_label = tk.Label(text="Pause!", font=('Helvetica', 20)).grid(row=0, column=2)
 
 
 def update_display():
@@ -125,11 +139,12 @@ def update_display():
 def update_stress():
     global stress
     if is_alive() and not end_game():
-        random_number = randint(0, 100)
-        if random_number == 0:
-            stress = True
-            stress_level_label.config(text="MAYDAY MAYDAY MAYDAY", font=('Helvetica', 12, 'bold italic'))
-        update_stress_level()
+        if Pause == False:
+            random_number = randint(0, 100)
+            if random_number == 0:
+                stress = True
+                stress_level_label.config(text="MAYDAY MAYDAY MAYDAY", font=('Helvetica', 12, 'bold italic'))
+            update_stress_level()
 
 
 def update_stress_level():
@@ -153,10 +168,11 @@ def update_stress_level():
 def update_water_level():
     global water_level
     global day
-    water_level -= day / 10
+    water_level -= day
     water_bar['value'] = water_level
     if is_alive() and not end_game():
-        water_level_label.after(500, update_water_level)
+        if Pause == False:
+            water_level_label.after(500, update_water_level)
 
 
 def update_nutrient_level():
@@ -166,7 +182,8 @@ def update_nutrient_level():
     print(nutrient)
     nutrient_bar['value'] = nutrient
     if is_alive() and not end_game():
-        nutrient_label.after(500, update_nutrient_level)
+        if Pause == False:
+            nutrient_label.after(500, update_nutrient_level)
 
 
 def update_day():
@@ -175,15 +192,16 @@ def update_day():
     if end_game():
         return
     if is_alive() and not end_game():
-        if int(day) - day == 0:  # т.е. day - целое число
-            day += 0.5
-            night = False
-            sky_fig.config(image=sun)
-        else:
-            day += 0.5
-            night = True
-            sky_fig.config(image=moon)
-        day_label.after(20000, update_day)
+        if Pause == False:
+            if int(day) - day == 0:  # т.е. day - целое число
+                day += 0.5
+                night = False
+                sky_fig.config(image=sun)
+            else:
+                day += 0.5
+                night = True
+                sky_fig.config(image=moon)
+            day_label.after(3000, update_day)
 
 
 def water_the_plant():
@@ -207,16 +225,8 @@ def mescaline():
 
 def is_alive():
     global water_level
-    global day
     if 0 < water_level < 150 and nutrient > 0:
         btn_water.config(stat="active")
-        # if day == 10.0:
-        #     start_label.config(text="Congratz! There is no prize, lol. Press return to restart")
-        #     btn_water.config(stat="disabled")
-        #     btn_mescaline.config(stat="disabled")
-        #     btn_co2.config(stat="disabled")
-        #     plant_fig.config(image=victory)
-        #     return False
         return True
     else:
         if water_level <= 0:
@@ -309,7 +319,7 @@ water_text_label.grid(row=6, column=1)
 
 with open("stress.txt", "r") as f2:
     stress_text = f2.read()
-stress_text_label = tk.Label(text=stress_text, font=('Helvetica', 12))
+stress_text_label = tk.Label(text=stress_text, font=('Helvetica', 14))
 stress_text_label.grid(row=6, column=3)
 
 plant_fig = tk.Label(image=normal_plant)
@@ -331,5 +341,9 @@ btn_mescaline.grid(row=7, column=3, sticky=tk.NSEW)
 
 # run the 'startGame' function when the enter key is pressed.
 root.bind('<Return>', start_game)
+btn_pouse = tk.Button(text="Pause", height='12', command=pause)
+# btn_pouse.config(stat="disabled")
+btn_pouse.grid(row=6, column=0)
+# root.bind("<space>", pause)
 # start the GUI
 root.mainloop()
