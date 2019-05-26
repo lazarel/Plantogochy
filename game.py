@@ -199,6 +199,17 @@ def update_day():
                 sky_fig.config(image=moon)
             day_label.after(20000, update_day)
 
+        if int(day) - day == 0:  # т.е. day - целое число
+            day += 0.5
+            night = False
+            sky_fig.config(image=sun)
+        else:
+            day += 0.5
+            night = True
+            sky_fig.config(image=moon)
+        day_label.after(20000, update_day)
+    else:
+        day_label.config(text="You've been alive for {} days!".format(day))
 
 def water_the_plant():
     global water_level
@@ -297,10 +308,10 @@ nutrient_bar.grid(row=3, column=3)
 day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
 day_label.grid(row=5, column=2)
 
-# with open("water.txt", "r") as f1:
-#     water_text = f1.read()
-# water_text_label = tk.Label(text=water_text, font=('Helvetica', 12))
-# water_text_label.grid(row=6, column=1)
+with open("water.txt", "r") as f1:
+    water_text = f1.read()
+water_text_label = tk.Label(text=water_text, font=('Helvetica', 12))
+water_text_label.grid(row=6, column=1)
 
 with open("stress.txt", "r") as f2:
     stress_text = f2.read()
