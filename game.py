@@ -23,7 +23,7 @@ game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
 stress = False
 stress_level = game_obj.stress
-day = 0
+day = 9
 night = False
 nutrient = 80
 
@@ -106,6 +106,7 @@ def update_display():
         else:
             plant_fig.config(image=mature_died_plant)
 
+
     # Обновляем уровень воды
     water_level_label.config(text="Water level:")
 
@@ -150,7 +151,7 @@ def update_stress_level():
 def update_water_level():
     global water_level
     global day
-    water_level -= day
+    water_level -= day/10
     water_bar['value'] = water_level
     if is_alive():
         water_level_label.after(500, update_water_level)
@@ -202,9 +203,17 @@ def mescaline():
 
 def is_alive():
     global water_level
+    global day
     if water_level > 0 and water_level < 150 and nutrient > 0:
         btn_water.config(stat="active")
         return True
+    if day == 10.0:
+        start_label.config(text="Congratz! There is no prize, lol. Press return to restart")
+        btn_water.config(stat="disabled")
+        btn_mescaline.config(stat="disabled")
+        btn_co2.config(stat="disabled")
+        plant_fig.config(image=victory)
+        return False
     else:
         if water_level <= 0:
             start_label.config(text="Game over! The plant has withered! Press return to restart")
@@ -214,6 +223,7 @@ def is_alive():
             start_label.config(text="Game over! The plant died of hunger! Press return to restart")
         btn_water.config(stat="disabled")
         btn_mescaline.config(stat="disabled")
+        btn_co2.config(stat="disabled")
         return False
 
 
@@ -240,6 +250,7 @@ mescaline_button = tk.PhotoImage(file="mescaline.png")
 sun = tk.PhotoImage(file="creepy_sun.png")
 moon = tk.PhotoImage(file="molester_moon.png")
 co2 = tk.PhotoImage(file="co2.png")
+victory = tk.PhotoImage(file="victory_plant.png")
 
 start_label = tk.Label(text="Press 'Return' to start!", font=('Helvetica', 12))
 start_label.grid(row=0, column=2)
