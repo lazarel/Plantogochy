@@ -1,6 +1,6 @@
-from game import FullScreenApp, start_game
+from game import start_game
 
 
 if __name__ == '__main__':
-    app = FullScreenApp(parent=start_game(True))
-    app.mainloop()
+    start_game(True)
+   # app.mainloop()

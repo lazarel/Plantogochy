@@ -253,7 +253,7 @@ def end_game():
 
 root = tk.Tk()
 root.title("Plantogotchi")
-root.geometry("1010x720")
+root.geometry("1060x720")
 root.resizable(width=False, height=False)
 
 app = FullScreenApp(root)
