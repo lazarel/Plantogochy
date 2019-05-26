@@ -3,9 +3,10 @@ import tkinter.ttk as ttk
 from tkinter.ttk import Progressbar
 from random import randint
 import characters
-import json, os
+# import json, os
 
 SAVE_DIR = '~/Plantogotchi/save'
+
 
 class FullScreenApp(tk.Frame):
     def __init__(self, parent, **kw):
@@ -30,7 +31,7 @@ nutrient = 80
 
 def start_game(event):
     global okToPressReturn
-    if okToPressReturn == False:
+    if not okToPressReturn:
         restart_game()
     else:
         # update the time left label.
@@ -77,6 +78,9 @@ def update_display():
     global stress
     global stress_level
 
+    if end_game():
+        return
+
     if water_level <= 15 or water_level >= 115:
         if day < 3:
             plant_fig.config(image=dying_plant)
@@ -120,7 +124,7 @@ def update_display():
 
 def update_stress():
     global stress
-    if is_alive():
+    if is_alive() and not end_game():
         random_number = randint(0, 100)
         if random_number == 0:
             stress = True
@@ -135,7 +139,7 @@ def update_stress_level():
     global day
     global nutrient
     if stress:
-        stress_level += (1 + day/2)
+        stress_level += (1 + day / 2)
         water_level -= 3
         nutrient -= 2
         stress_bar['value'] = stress_level
@@ -146,30 +150,31 @@ def update_stress_level():
         stress_level_label.config(text="Situation normal", font=('Helvetica', 12))
 
 
-
 def update_water_level():
     global water_level
     global day
-    water_level -= day
+    water_level -= day / 10
     water_bar['value'] = water_level
-    if is_alive():
+    if is_alive() and not end_game():
         water_level_label.after(500, update_water_level)
 
 
 def update_nutrient_level():
     global nutrient
     global day
-    nutrient -= day/10
+    nutrient -= day / 10
     print(nutrient)
     nutrient_bar['value'] = nutrient
-    if is_alive():
+    if is_alive() and not end_game():
         nutrient_label.after(500, update_nutrient_level)
 
 
 def update_day():
     global day
     global night
-    if is_alive():
+    if end_game():
+        return
+    if is_alive() and not end_game():
         if int(day) - day == 0:  # т.е. day - целое число
             day += 0.5
             night = False
@@ -179,8 +184,6 @@ def update_day():
             night = True
             sky_fig.config(image=moon)
         day_label.after(20000, update_day)
-    else:
-        day_label.config(text="You've been alive for {} days!".format(day))
 
 
 def water_the_plant():
@@ -204,8 +207,16 @@ def mescaline():
 
 def is_alive():
     global water_level
-    if water_level > 0 and water_level < 150 and nutrient > 0:
+    global day
+    if 0 < water_level < 150 and nutrient > 0:
         btn_water.config(stat="active")
+        # if day == 10.0:
+        #     start_label.config(text="Congratz! There is no prize, lol. Press return to restart")
+        #     btn_water.config(stat="disabled")
+        #     btn_mescaline.config(stat="disabled")
+        #     btn_co2.config(stat="disabled")
+        #     plant_fig.config(image=victory)
+        #     return False
         return True
     else:
         if water_level <= 0:
@@ -216,7 +227,18 @@ def is_alive():
             start_label.config(text="Game over! The plant died of hunger! Press return to restart")
         btn_water.config(stat="disabled")
         btn_mescaline.config(stat="disabled")
+        btn_co2.config(stat="disabled")
         return False
+
+
+def end_game():
+    if day == 10.0:
+        start_label.config(text="Congratz! There is no prize, lol.")
+        btn_water.config(stat="disabled")
+        btn_mescaline.config(stat="disabled")
+        btn_co2.config(stat="disabled")
+        plant_fig.config(image=victory)
+        return True
 
 
 root = tk.Tk()
@@ -242,6 +264,7 @@ mescaline_button = tk.PhotoImage(file="mescaline.png")
 sun = tk.PhotoImage(file="creepy_sun.png")
 moon = tk.PhotoImage(file="molester_moon.png")
 co2 = tk.PhotoImage(file="co2.png")
+victory = tk.PhotoImage(file="victory_plant.png")
 
 start_label = tk.Label(text="Press 'Return' to start!", font=('Helvetica', 12))
 start_label.grid(row=0, column=2)
@@ -249,11 +272,10 @@ start_label.grid(row=0, column=2)
 water_level_label = tk.Label(text="Water level", font=('Helvetica', 12))
 water_level_label.grid(row=1, column=2)
 
-
 water_bar_style = ttk.Style()
 water_bar_style.theme_use('default')
 water_bar_style.configure("blue.Horizontal.TProgressbar", background="blue")
-water_bar = Progressbar(orient="horizontal",length=200, maximum=150,
+water_bar = Progressbar(orient="horizontal", length=200, maximum=150,
                         mode="determinate", style="blue.Horizontal.TProgressbar")
 water_bar.grid(row=2, column=2)
 
@@ -274,7 +296,7 @@ nutrient_bar_style = ttk.Style()
 nutrient_bar_style.theme_use('default')
 nutrient_bar_style.configure("green.Horizontal.TProgressbar", background="green")
 nutrient_bar = Progressbar(orient="horizontal", length=200, maximum=100,
-                         mode="determinate", style="green.Horizontal.TProgressbar")
+                           mode="determinate", style="green.Horizontal.TProgressbar")
 nutrient_bar.grid(row=3, column=3)
 
 day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
