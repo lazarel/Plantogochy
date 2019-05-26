@@ -2,29 +2,96 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.ttk import Progressbar
 from random import randint
+import json
+import os
 import characters
+import menu
 
 
 
 
-class FullScreenApp(object):
+class FullScreenApp(tk.Frame):
     def __init__(self, master, **kwargs):
         self.master = master
-        pad = 3
+        #self._add_menu()
+        pad = 10
         self._geom = '1000x900+0+0'
         master.geometry("{0}x{1}+0+0".format(
             master.winfo_screenwidth() - pad, master.winfo_screenheight() - pad))
         master.bind('<Escape>', self.toggle_geom)
+        
 
     def toggle_geom(self, event):
         geom = self.master.winfo_geometry()
         print(geom, self._geom)
         self.master.geometry(self._geom)
         self._geom = geom
+        
+def _add_menu(self):
+    self.master.title("Plantogotchi")
+    menu_bar = tk.Menu(self.master)
+    self.master.config(menu=menu_bar)
+    file_menu = tk.Menu(menu_bar)
+    game_menu = tk.Menu(menu_bar)
+    
+    # menu_bar.add_cascade(label="File", menu=file_menu)
+    file_menu.add_command(label="save", command=save)
+    file_menu.add_command(label="exit", command=lambda root=root:quit(root))
+    # file_menu.add_command(label="load", command=self.load)
+
+#    #   game_menu.add_command(label='new', command=self._menu.start_new_game)
+    menu_bar.add_cascade(label="file", menu=file_menu)
+    
+    menu_bar.add_cascade(label='game', menu=game_menu)
+
+    
+# def onExit(self):
+#         self.quit()
+def _get_save_file_name(self):
+    initialdir = os.path.expanduser(SAVE_DIR)
+    if not os.path.exists(initialdir):
+        os.makedirs(initialdir)
+    save_file_name = filedialog.asksaveasfilename(
+        initialdir=initialdir,
+        title='Save game',
+        filetypes=(("json files", "*.json"), ("all files", "*.*"))
+    )
+    if save_file_name in [(), '']:
+        return None
+    return save_file_name
+    
+def _get_load_file_name(self):
+    initialdir = os.path.expanduser(SAVE_DIR)
+    if not os.path.exists(initialdir):
+        initialdir = os.path.expanduser('~')
+    save_file_name = filedialog.askopenfilename(
+        initialdir=initialdir,
+        filetypes=(("json files", "*.json"), ("all files", "*.*"))
+    )
+    if save_file_name in [(), '']:
+        return None
+    return save_file_name
+
+def save(self):
+    old_lock = self.lock
+    self.lock = True
+    save_file_name = self._get_save_file_name()
+    if save_file_name is not None:
+        saved_game = {
+            "water_level": game_obj.water,
+            "stress_level": game_obj.stress,
+            "day": game_obj.update_day,
+            "stress": game_obj.update_stress,
+        }
+        with open(save_file_name, 'w') as f:
+            json.dump(saved_game, f)
+        
+
+        
 
 
 okToPressReturn = True
-print('Работает?')
+
 game_obj = characters.C3JuvenalPlant()
 water_level = game_obj.water
 stress = False
@@ -159,15 +226,18 @@ def is_alive():
         return False
 
 
+
 root = tk.Tk()
-root.title("Plantogotchi")
+#root.title("Plantogotchi")
 app = FullScreenApp(root)
+_add_menu(app)
+
 
 start_label = tk.Label(text="Press 'Return' to start!", font=('Helvetica', 12))
-start_label.grid(row=0, column=2)
+start_label.grid(row=0, column=5)
 
 water_level_label = tk.Label(text="Water level", font=('Helvetica', 12))
-water_level_label.grid(row=1, column=2)
+water_level_label.grid(row=1, column=5)
 
 
 water_bar_style = ttk.Style()
@@ -175,31 +245,31 @@ water_bar_style.theme_use('default')
 water_bar_style.configure("blue.Horizontal.TProgressbar", background="blue")
 water_bar = Progressbar(orient="horizontal",length=200, maximum=150,
                         mode="determinate", style="blue.Horizontal.TProgressbar")
-water_bar.grid(row=2, column=2)
+water_bar.grid(row=2, column=5)
 
 stress_level_label = tk.Label(text="Situation normal", font=('Helvetica', 12))
-stress_level_label.grid(row=3, column=2)
+stress_level_label.grid(row=3, column=5)
 
 stress_bar_style = ttk.Style()
 stress_bar_style.theme_use('default')
 stress_bar_style.configure("redHorizontal.Tprogressbar", background="red")
 stress_bar = Progressbar(orient="horizontal", length=200, maximum=100,
                          mode="determinate", style="red.Horizontal.TProgressbar")
-stress_bar.grid(row=4, column=2)
+stress_bar.grid(row=4, column=5)
 
 # add a 'day' label.
 day_label = tk.Label(text="Day: " + str(day), font=('Helvetica', 12))
-day_label.grid(row=5, column=2)
+day_label.grid(row=5, column=5)
 
 with open("water.txt", "r") as f1:
     water_text = f1.read()
 water_text_label = tk.Label(text=water_text, font=('Helvetica', 12))
-water_text_label.grid(row=6, column=1)
+water_text_label.grid(row=6, column=0)
 
 with open("stress.txt", "r") as f2:
     stress_text = f2.read()
 stress_text_label = tk.Label(text=stress_text, font=('Helvetica', 12))
-stress_text_label.grid(row=6, column=4)
+stress_text_label.grid(row=6, column=5)
 
 
 # ADDING IMAGES
@@ -218,10 +288,10 @@ mescaline_button = tk.PhotoImage(file="mescaline.png")
 
  # using an image
 plant_fig = tk.Label(image=normal_plant)
-plant_fig.grid(row=6, column=2)
+plant_fig.grid(row=1, column=2, rowspan=6,columnspan = 2)
 #
 btn_water = tk.Button(image=water_button, command=water_the_plant)
-btn_water.grid(row=6, column=1)
+btn_water.grid(row=8, column=0)
 #
 #
 btn_mescaline = tk.Button(image=mescaline_button, command=mescaline, stat="disabled")
@@ -229,7 +299,7 @@ if stress:
     btn_mescaline.config(state="active")
 else:
     btn_mescaline.config(state="disabled")
-btn_mescaline.grid(row=6, column=3)
+btn_mescaline.grid(row = 8,column = 5,sticky="ew")
 
 
 # run the 'startGame' function when the enter key is pressed.
