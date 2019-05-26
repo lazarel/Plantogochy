@@ -98,8 +98,9 @@ def update_stress_level():
     global stress
     global stress_level
     global water_level
+    global day
     if stress:
-        stress_level += 1
+        stress_level += (1 + day/2)
         water_level -= 3
         stress_bar['value'] = stress_level
         btn_mescaline.config(stat="active")
@@ -110,7 +111,8 @@ def update_stress_level():
 
 def update_water_level():
     global water_level
-    water_level -= 1
+    global day
+    water_level -= day
     water_bar['value'] = water_level
     if is_alive():
         water_level_label.after(500, update_water_level)
@@ -120,17 +122,18 @@ def update_day():
     global day
     global night
     if is_alive():
-        night = False
-        day += 1
-        day_label.after(2000, update_night())
-
-
-
-def update_night():
-    global night
-    if is_alive():
-        night = True
-        day_label.after(2000, update_day())
+        if int(day) - day == 0:  # т.е. day - целое число
+            day += 0.5
+            night = False
+            sky_fig.config(image=sun)
+            print("day: ", day)
+        else:
+            day += 0.5
+            night = True
+            sky_fig.config(image=moon)
+            print("night")
+        #day += 1
+        day_label.after(20000, update_day)
 
 
 def water_the_plant():
@@ -220,13 +223,13 @@ water_text_label.grid(row=6, column=1)
 with open("stress.txt", "r") as f2:
     stress_text = f2.read()
 stress_text_label = tk.Label(text=stress_text, font=('Helvetica', 12))
-stress_text_label.grid(row=6, column=4)
+stress_text_label.grid(row=6, column=3)
 
 plant_fig = tk.Label(image=normal_plant)
 plant_fig.grid(row=6, column=2)
 
-# sky_fig = tk.Label(image=sun)
-# sky_fig.grid(rowspan=5, column=1, sticky=tk.NSEW)
+sky_fig = tk.Label(image=sun)
+sky_fig.grid(row=0, rowspan=6, column=1, sticky=tk.NSEW)
 
 btn_water = tk.Button(image=water_button, command=water_the_plant)
 btn_water.config(stat="disabled")
@@ -237,7 +240,7 @@ btn_co2.config(stat="disabled")
 btn_co2.grid(row=7, column=2, sticky=tk.NSEW)
 
 btn_mescaline = tk.Button(image=mescaline_button, command=mescaline, stat="disabled")
-btn_mescaline.grid(row=7, column=4, sticky=tk.NSEW)
+btn_mescaline.grid(row=7, column=3, sticky=tk.NSEW)
 
 # run the 'startGame' function when the enter key is pressed.
 root.bind('<Return>', start_game)
