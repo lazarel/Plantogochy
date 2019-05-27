@@ -72,18 +72,21 @@ def restart_game():
         update_nutrient_level()
         update_display()
 
+def visible_true():
+    label_visible_false.grid_remove()
+    label_visible_true()
 
 def pause():
     global Pause
 
     if Pause == True:
-
         Pause = False
-        pause_label = tk.Label(text="         ", font=('Helvetica', 20)).grid(row=0, column=2)
-
+        pause_label.config(text="")
     else:
         Pause = True
-        pause_label = tk.Label(text="Pause!", font=('Helvetica', 20)).grid(row=0, column=2)
+        pause_label.config(text="Pause!", font=('Helvetica', 20))
+
+        
 
 
 def update_display():
@@ -275,6 +278,9 @@ sun = tk.PhotoImage(file="creepy_sun.png")
 moon = tk.PhotoImage(file="molester_moon.png")
 co2 = tk.PhotoImage(file="co2.png")
 victory = tk.PhotoImage(file="victory_plant.png")
+
+pause_label = tk.Label(text="")
+pause_label.grid(row=0, column=3)
 
 start_label = tk.Label(text="Press 'Return' to start!", font=('Helvetica', 12))
 start_label.grid(row=0, column=2)
